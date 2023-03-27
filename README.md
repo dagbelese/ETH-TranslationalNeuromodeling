@@ -1,3 +1,1 @@
 # ETH-TranslationalNeuromodeling
-
-Hello
