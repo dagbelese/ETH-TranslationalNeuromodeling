@@ -18,46 +18,57 @@ b_0 = 2;
 
 
 %% e)
-[m, s_2, a, b, F_arr] = vb(y, mu_0, lambda_0, a_0, b_0, N);
+[m, s_2, a, b, F_arr] = vb(y, mu_0, lambda_0, a_0, b_0, N, 1);
 
 % posterior parameters: μ and τ
 tau_post = gamrnd(a,b); % τ is given by gamma distribution with parameters a and b
 mu_post = normrnd(m, s_2); % μ is given by gaussian distribution with parameters m and s_2
 posterior = tau_post * mu_post; % posterior
 
-%% todo: store [m, s_2, a, b, F_arr], post. params, post.
-
-%% todo: Run the program a few more times starting from random values; although keep in mind that s2, a and b must be positive. 
-% Compare solutions between the runs in terms of posterior parameter and free energy at convergence
-
-%% todo:generate random starting values
-%% todo: run stuff again
-%% todo: calculate posterior params 
-%% todo: store [m, s_2, a, b, F_arr], post. params, post.
+results_prior = [m, s_2, a, b, F_arr(end), tau_post, mu_post, posterior];
 
 
-%% f)
-% If you can report the results from one run only, which one would you choose?
+% with random starting values
+results_rand = [0, 0, 0, 0, 0, 0, 0, 0];
+for i = 1:10
+    % 0 as the last parameter indicates that no prior is given
+    [m, s_2, a, b, F_arr] = vb(y, mu_0, lambda_0, a_0, b_0, N, 0);
+
+    % get posterior parameters and store results
+    tau_post = gamrnd(a,b);
+    mu_post = normrnd(m, s_2);
+    results_rand = vertcat(results_rand, [m, s_2, a, b, F_arr(end), tau_post, mu_post, tau_post * mu_post]);
+           
+end
+    
 
 
 %% d)
 % loop for iterations
-function [m, s_2, a, b, F_arr] = vb(y, mu_0, lambda_0, a_0, b_0, N)
+function [m, s_2, a, b, F_arr] = vb(y, mu_0, lambda_0, a_0, b_0, N, prior)
 
     % get y mean from y data
     y_mean = mean(y);
 
     % starting values
-    a = a_0;
-    b = b_0;
-    m = mu_0;
-    s_2 = b_0 / (a_0 * lambda_0);
+    if (prior)
+        a = a_0;
+        b = b_0;
+        m = mu_0;
+        s_2 = b_0 / (a_0 * lambda_0);
+    else
+        % random starting variables
+        a = 6 * rand(1,1) + 0.00001; % range 0.00001 to 6
+        b = 6 * rand(1,1) + 0.00001; % range 0.00001 to 6
+        m = 4 * rand(1,1) - 2; % range -2 to 2
+        s_2 = 1 * rand(1,1) + 0.00001; % range 0.00001 to 1
+
+    end
     
     % initialize Free energy vector
     F_arr = []; 
     F_arr = [F_arr 0]; 
-
-
+    
     while 1
 
         %% b)
