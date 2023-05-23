@@ -26,7 +26,7 @@ for i=1:length(agon_matlab_names)
     dataset_path = strcat(agon_folder_names{i},'/', agon_matlab_names{i});
     dataset_path = fullfile(agon_folder, dataset_path);
     % Create dataset
-    agon_data = spm_eeg_load(file_path);
+    agon_data = spm_eeg_load(dataset_path);
     agon_data = agon_data(1:63,:,:); % discard EOG, ECG and pulse channels
     agon_dataset(i,:,:,:) = agon_data;
     % Create label
@@ -56,7 +56,7 @@ for i=1:length(anta_matlab_names)
     dataset_path = strcat(anta_folder_names{i},'/', anta_matlab_names{i});
     dataset_path = fullfile(anta_folder, dataset_path);
     % Create dataset
-    anta_data = spm_eeg_load(file_path);
+    anta_data = spm_eeg_load(dataset_path);
     anta_data = anta_data(1:63,:,:); % discard EOG, ECG and pulse channels
     anta_dataset(i,:,:,:) = anta_data;
     % Create label
